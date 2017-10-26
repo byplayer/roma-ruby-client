@@ -62,6 +62,8 @@ SPEC = Gem::Specification.new do |s|
   s.description = 'ROMA client library'
   s.files = PKG_FILES.to_a
 
+  s.required_ruby_version = '>= 2.0.0'
+
   s.require_path = 'lib'
 
   s.has_rdoc = true
