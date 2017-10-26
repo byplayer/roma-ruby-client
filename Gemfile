@@ -1,8 +1,14 @@
-source :rubygems
+# frozen_string_literal: true
 
-gem "rake"
-gem "rspec"
-gem "rr"
+source 'https://rubygems.org'
 
-# add rdoc for darkfish format
-gem "rdoc"
+group :development, :test do
+  gem 'rake'
+
+  gem 'rr'
+  gem 'rspec'
+  gem 'simplecov'
+
+  # add rdoc for darkfish format
+  gem 'rdoc'
+end
