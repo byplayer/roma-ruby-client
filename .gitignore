@@ -6,3 +6,6 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
+/vendor/bundle
+/coverage
+/.ruby-version
