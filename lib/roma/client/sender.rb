@@ -11,7 +11,7 @@ module Roma
       end
 
       def send_route_mklhash_command(node_id)
-        timeout(1){
+        Timeout.timeout(1){
           conn = ConPool.instance.get_connection(node_id)
           conn.write "mklhash 0\r\n"
           ret = conn.gets
@@ -24,7 +24,7 @@ module Roma
       end
 
       def send_routedump_command(node_id)
-        timeout(1){
+        Timeout.timeout(1){
           buf = RUBY_VERSION.split('.')
           if buf[0].to_i == 1 && buf[1].to_i == 8
             return send_routedump_yaml_command(node_id)

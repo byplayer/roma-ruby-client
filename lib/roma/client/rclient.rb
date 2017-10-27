@@ -71,7 +71,7 @@ module Roma
           end
         }
 
-        raise RuntimeError.new("fatal error")
+        raise RuntimeError.new("fatal error: can't update routing table")
       end
 
       def rttable_last_update
@@ -405,7 +405,7 @@ module Roma
         nid, d = @rttable.search_node(key)
         cmd2 = sprintf(cmd, "#{key}\e#{@default_hash_name}", *params)
 
-        timeout(@@timeout){
+        Timeout.timeout(@@timeout){
           return @sender.send_command(nid, cmd2, value, receiver)
         }
       rescue => e
