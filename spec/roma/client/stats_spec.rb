@@ -2,14 +2,12 @@ require File.expand_path(File.join('..', '..', 'spec_helper'), File.dirname(__FI
 
 describe Roma::Client::Stats do
   before(:all) do
-    start_roma
     nodes = DEFAULT_PORTS.map { |port| "#{DEFAULT_HOST}:#{port}" }
     @client = Roma::Client::RomaClient.new(nodes)
     @stats = @client.stats
   end
 
   after(:all) do
-    stop_roma
   end
 
   context 'first level' do

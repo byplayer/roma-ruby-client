@@ -3,14 +3,6 @@ require File.expand_path(File.join('..', '..', 'spec_helper'),
                          File.dirname(__FILE__))
 
 describe Roma::Client::ClientPool do # rubocop:disable BlockLength
-  before(:all) do
-    start_roma
-  end
-
-  after(:all) do
-    stop_roma
-  end
-
   context 'Singleton' do
     subject { Roma::Client::ClientPool.instance(:test) }
     it do

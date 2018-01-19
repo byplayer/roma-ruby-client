@@ -53,6 +53,17 @@ Or install it yourself as:
   5. Create new Pull Request
 
 
+## Test
+
+Run below command to start test ROMA server, before run spec
+
+    $ pushd roma-test-tools/test_roma_server
+    $ ./run_test_roma.sh
+
+Then run spec
+
+    $ bundle exec rake spec
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/roma/roma-ruby-client. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](contributor-covenant.org) code of conduct.
