@@ -10,4 +10,3 @@ group :development, :test do
   # add rdoc for darkfish format
   gem 'rdoc'
 end
-gemspec
