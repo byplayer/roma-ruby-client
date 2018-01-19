@@ -1,25 +1,20 @@
-# -*- coding: utf-8 -*-
 #
 # = roma/client/version.rb
 # This file is derived from roma client.
 #
 module Roma #:nodoc:
-    module Client #:nodoc:
-      # == What Is This Library?
-      # ROMA クライアントバージョン情報モジュール
-      #
-      module VERSION
-        # メジャーバージョン
-        MAJOR = 0
+  module Client #:nodoc:
+    # == What Is This Library?
+    # ROMA client version info.
+    #
+    module VERSION
+      MAJOR = 0
 
-        # マイナバージョン
-        MINOR = 4
+      MINOR = 4
 
-        # TINY version
-        TINY  = 0
+      TINY  = 4
 
-        # バージョン文字列
-        STRING = [MAJOR, MINOR, TINY].join('.')
-      end
+      STRING = [MAJOR, MINOR, TINY].join('.')
     end
+  end
 end

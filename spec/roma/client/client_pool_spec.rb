@@ -1,11 +1,14 @@
 # frozen_string_literal: true
-
 require File.expand_path(File.join('..', '..', 'spec_helper'),
                          File.dirname(__FILE__))
 
 describe Roma::Client::ClientPool do # rubocop:disable BlockLength
-  def test_nodes
-    %w[localhost_11311 localhost_11411]
+  before(:all) do
+    start_roma
+  end
+
+  after(:all) do
+    stop_roma
   end
 
   context 'Singleton' do
@@ -23,18 +26,19 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
     end
 
     it do
-      # rubocop:disable LineLength
       expect { Roma::Client::ClientPool.new }.to(
         raise_error(NoMethodError,
                     "private method `new' called for Roma::Client::ClientPool:Class")
       )
-      # rubocop:enable LineLength
     end
   end
 
   context 'max pool size of default' do
     subject { Roma::Client::ClientPool.instance(:test) }
-    it { expect(subject.max_pool_size).to eq(1) }
+    describe '#max_pool_size' do
+      subject { super().max_pool_size }
+      it { is_expected.to eq(1) }
+    end
   end
 
   context 'set max pool size ' do
@@ -51,26 +55,29 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
 
   context 'servers default' do
     subject { Roma::Client::ClientPool.instance(:test) }
-    it { expect(subject.servers).to be_nil }
+
+    describe '#servers' do
+      subject { super().servers }
+      it { is_expected.to be_nil }
+    end
   end
 
   context 'servers set' do
-    it {
+    it do
       pool = Roma::Client::ClientPool.instance(:test_servers_set)
       expect(pool.servers).to be_nil
-      nodes = test_nodes
+      nodes = DEFAULT_NODES
       pool.servers = nodes
       expect(pool.servers).to eq(nodes)
 
-      instance = Roma::Client::ClientPool.instance(:test_ini_nodes_set2)
-      expect(instance.servers).to be_nil
-    }
+      expect(Roma::Client::ClientPool.instance(:test_ini_nodes_set2).servers).to be_nil
+    end
   end
 
   context 'client' do
     subject do
       pool = Roma::Client::ClientPool.instance(:test_client)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool
     end
 
@@ -85,14 +92,14 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
     it do
       client = subject.client
       nodes = client.rttable.nodes
-      expect(nodes).to eq(test_nodes)
+      expect(nodes).to eq(DEFAULT_NODES)
     end
   end
 
   context 'client multi pool' do
     subject do
       pool = Roma::Client::ClientPool.instance(:test_client2)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool
     end
 
@@ -110,7 +117,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
       subject.push_client(client2)
       expect(subject.pool_count).to eq(1)
 
-      expect(client).to eq(subject.client)
+      expect(client).to be_equal subject.client
       expect(subject.pool_count).to eq(0)
     end
   end
@@ -152,7 +159,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
 
     it do
       pool = Roma::Client::ClientPool.instance(:pms_test2)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       expect(pool.plugin_modules).to be_nil
 
       pool.plugin_modules = [TestPlugin, TestPlugin2]
@@ -177,7 +184,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
 
     subject do
       pool = Roma::Client::ClientPool.instance
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool
     end
 
@@ -198,7 +205,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
   context 'release' do
     subject do
       pool = Roma::Client::ClientPool.instance(:release_test)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool
     end
 
@@ -221,7 +228,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
 
     subject do
       pool = Roma::Client::ClientPool.instance(:client_block)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool
     end
 
@@ -253,7 +260,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
   context 'start sync routing proc' do
     it do
       pool = Roma::Client::ClientPool.instance(:sync_test)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       old_thread_count = Thread.list.length
       pool.client do |c|
       end
@@ -264,7 +271,7 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
 
     it do
       pool = Roma::Client::ClientPool.instance(:no_sync_test)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool.start_sync_routing_proc = false
       old_thread_count = Thread.list.length
       pool.client do |c|
@@ -278,14 +285,15 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
   context 'release all' do
     it do
       pool = Roma::Client::ClientPool.instance(:release_all_1)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool.client do |c|
       end
+
       expect(Roma::Client::ClientPool
               .instance(:release_all_1).pool_count).to eq(1)
 
       pool = Roma::Client::ClientPool.instance(:release_all_2)
-      pool.servers = test_nodes
+      pool.servers = DEFAULT_NODES
       pool.client do |c|
       end
       expect(pool.pool_count).to eq(1)
@@ -299,9 +307,9 @@ describe Roma::Client::ClientPool do # rubocop:disable BlockLength
               .instance(:release_all_2).pool_count).to eq(0)
 
       expect(Roma::Client::ClientPool
-              .instance(:release_all_1).servers).to eq(test_nodes)
+              .instance(:release_all_1).servers).to eq(DEFAULT_NODES)
       expect(Roma::Client::ClientPool
-              .instance(:release_all_2).servers).to eq(test_nodes)
+              .instance(:release_all_2).servers).to eq(DEFAULT_NODES)
     end
   end
 end
